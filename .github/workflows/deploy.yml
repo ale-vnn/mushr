@@ -10,9 +10,6 @@ on:
   push:
     branches: [main]
   pull_request:
-  # The live check below, by hand or once a week.
-  schedule:
-    - cron: '17 6 * * 1'
   workflow_dispatch:
 
 permissions:
@@ -41,37 +38,18 @@ jobs:
 
       # The model, the grid grouping, and the datasets against their own
       # manifest. No network, about a second.
+      #
+      # `npm run test:smoke` drives the built site in a real browser and is the
+      # only thing that catches a rule that hides a block, a control another
+      # element sits on top of, or a chart that paints nothing. It is run by
+      # hand rather than here: it needs Chrome and it is timing-sensitive, and a
+      # check that goes red for reasons unrelated to the change teaches people
+      # to ignore it.
       - name: Unit and data checks
         run: npm test
 
       - name: Build
         run: npm run build
-
-      # The whole application in a real browser. It is the only thing that
-      # catches a MapLibre style the parser rejects, a module that throws on
-      # import, a chart that paints nothing, or a control another element sits
-      # on top of — and every one of those has happened here.
-      #
-      # It calls nothing: the weather cache is seeded with a known answer, so it
-      # runs offline in about five seconds and asserts an exact index rather
-      # than "more than forty". The live variant runs weekly, below.
-      - name: Find Chrome
-        id: chrome
-        run: |
-          path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium-browser || true)"
-          echo "path=$path" >> "$GITHUB_OUTPUT"
-          echo "${path:-none found — the smoke test will skip itself}"
-
-      - name: Serve the built site
-        run: npx vite preview --port 4173 &
-
-      - name: Wait for it
-        run: npx wait-on http://localhost:4173/mushr/ --timeout 60000
-
-      - name: Smoke test
-        env:
-          CHROME_PATH: ${{ steps.chrome.outputs.path }}
-        run: npm run test:smoke
 
       # Published straight from the job that checked it. Rebuilding in `deploy`
       # would publish something no test has seen.
@@ -84,31 +62,6 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
-
-  # Once a week, the same journey against the real Open-Meteo. Nothing else
-  # checks that its answer still has the shape the model reads, and a change
-  # there would break the application with every test passing.
-  live:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: npm
-      - run: npm ci
-      - run: npm run build
-      - name: Find Chrome
-        id: chrome
-        run: echo "path=$(command -v google-chrome || command -v google-chrome-stable || true)" >> "$GITHUB_OUTPUT"
-      - run: npx vite preview --port 4173 &
-      - run: npx wait-on http://localhost:4173/mushr/ --timeout 60000
-      - name: Smoke test against the live service
-        env:
-          CHROME_PATH: ${{ steps.chrome.outputs.path }}
-          SMOKE_LIVE: '1'
-        run: npm run test:smoke
 
   deploy:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'

@@ -18,6 +18,7 @@ npm test           # model, data — no network, one second
 npm run build
 npm run preview    # serve the build at http://localhost:4173/mushr/
 npm run test:smoke # the built site in a real browser, offline, about five seconds
+                   # (run by hand — it needs Chrome and is timing-sensitive)
 ```
 
 ## Two screens
@@ -100,8 +101,8 @@ testable, and what let it move here from an earlier prototype untouched.
 
 ## Deployment
 
-Push to `main`. `.github/workflows/deploy.yml` checks, builds and publishes to
-GitHub Pages; the site is uploaded from the same job that tested it. Turn it on
+Push to `main`. `.github/workflows/deploy.yml` runs the unit and data checks,
+builds, and publishes to GitHub Pages from the same job. Turn it on
 once with **Settings → Pages → Source: GitHub Actions**. There are no secrets,
 because there are no keys.
 

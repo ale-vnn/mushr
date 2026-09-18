@@ -163,8 +163,14 @@ try {
     );
   }
 
-  // Choosing a department must move the map onto it. The extent comes from the
-  // manifest, so this should be true before the weather has even landed.
+  // Choosing a department must move the map onto it. With the weather cache
+  // seeded the ranking can appear before MapLibre has finished starting, so
+  // wait for the engine — the application remembers the frame and applies it on
+  // load, and that is what is being checked.
+  await page.waitForFunction(() => window.__mushr?.mapReady(), { timeout: 60000 });
+  await new Promise((r) => setTimeout(r, 300));
+
+  // The extent comes from the manifest, so this holds without any weather.
   const framing = await page.evaluate((code) => {
     const { view, departmentBBox } = window.__mushr;
     const v = view();
@@ -258,6 +264,41 @@ try {
     check(reachable, `the mode buttons are clickable at ${width} px`);
   }
   await page.setViewport({ width: 1280, height: 900 });
+
+  // The race the fix is for: choose a department before MapLibre has finished
+  // starting. The frame has to be remembered and applied on load, not dropped.
+  // Waiting for readiness first, as the checks above do, would never exercise
+  // it — so here the selection happens as early as the page allows.
+  {
+    const fresh = await browser.newPage();
+    await fresh.setViewport({ width: 1280, height: 900 });
+    await fresh.evaluateOnNewDocument(
+      (entry) => {
+        try {
+          localStorage.removeItem("mushr.prefs");
+          if (entry) localStorage.setItem("mushr.conditions.v3", JSON.stringify({ [entry.key]: entry.value }));
+        } catch {
+          /* storage blocked */
+        }
+      },
+      seed,
+    );
+    await fresh.goto(URL, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await fresh.waitForSelector("#dept option[value='" + DEPT + "']", { timeout: 30000 });
+    const early = await fresh.evaluate(() => !window.__mushr?.mapReady());
+    await fresh.select("#dept", DEPT);
+    await fresh.waitForFunction(() => window.__mushr?.mapReady(), { timeout: 60000 });
+    await new Promise((r) => setTimeout(r, 900));
+    const framed = await fresh.evaluate((code) => {
+      const { view, departmentBBox } = window.__mushr;
+      const v = view();
+      const b = departmentBBox(code);
+      const [lon, lat] = v.centre;
+      return lon >= b[0] && lon <= b[2] && lat >= b[1] && lat <= b[3];
+    }, DEPT);
+    check(framed, `a department chosen before the map is ready is still framed${early ? "" : " (the map was already ready; the race did not occur)"}`);
+    await fresh.close();
+  }
 
   await page.click('[data-lang="en"]');
   await new Promise((r) => setTimeout(r, 500));

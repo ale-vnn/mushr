@@ -24,7 +24,7 @@ import "./app.css";
 import { initI18n, applyStatic, setLang, getLang, onLangChange, t, locale } from "./src/i18n.js";
 import { loadManifest, departmentCodes, departmentCount, departmentBBox } from "./src/data.js";
 import { departmentName } from "./src/departments.js";
-import { initMap, onForestClick, paint, fitBBox, flyTo, view } from "./src/map.js";
+import { initMap, onForestClick, paint, fitBBox, flyTo, view, mapReady } from "./src/map.js";
 import {
   state, onRender, render, selectDepartment, loadFollowed, noteDepartment,
   setDay, setSelected, visibleForests, bandOf, forestById, retry, FORECAST_DAYS, TODAY_INDEX,
@@ -132,14 +132,14 @@ function buildFilters() {
  * therefore changes what is on screen, not just what is in the list.
  */
 /** Build the map the first time one is needed, and wire it once. */
-let mapReady = null;
+let mapBoot = null;
 function ensureMap(bounds) {
-  mapReady ??= initMap("map", { bounds }).then(() => {
+  mapBoot ??= initMap("map", { bounds }).then(() => {
     onForestClick((id) => {
       if (forestById(id)) setSelected(id);
     });
   });
-  return mapReady;
+  return mapBoot;
 }
 
 async function setMode(mode) {
@@ -320,4 +320,4 @@ start();
 
 // A handle for the browser smoke test. It exposes what the modules already
 // export and changes no behaviour.
-window.__mushr = { state, TODAY_INDEX, isFavourite, view, departmentBBox };
+window.__mushr = { state, TODAY_INDEX, isFavourite, view, mapReady, departmentBBox };

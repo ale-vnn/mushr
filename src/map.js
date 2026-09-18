@@ -21,6 +21,7 @@ import { basemapStyle } from "./basemap.js";
 // they are fetched when a map is first asked for, not when the page loads —
 // which also lets the ranking paint before the engine arrives.
 let maplibregl = null;
+let pendingFrame = null;
 
 /**
  * The band ramp, as the map draws it.
@@ -151,6 +152,11 @@ export async function initMap(container, { bounds } = {}) {
 
   await new Promise((resolve) => map.on("load", resolve));
   ready = true;
+  if (pendingFrame) {
+    const { bbox, padding, animate } = pendingFrame;
+    pendingFrame = null;
+    fitBBox(bbox, { padding, animate });
+  }
   return map;
 }
 
@@ -194,7 +200,14 @@ export function paint(forests, bandOf, selected) {
  * than the points that stand for them.
  */
 export function fitBBox(bbox, { padding = 48, animate = true } = {}) {
-  if (!ready || !bbox) return;
+  if (!bbox) return;
+  // Asked for before the engine finished starting, the frame used to be
+  // dropped on the floor: pick a department in the first second and the map
+  // stayed on France. It is remembered instead, and applied on load.
+  if (!ready) {
+    pendingFrame = { bbox, padding, animate: false };
+    return;
+  }
   map.fitBounds(
     [
       [bbox[0], bbox[1]],
@@ -204,9 +217,12 @@ export function fitBBox(bbox, { padding = 48, animate = true } = {}) {
   );
 }
 
-/** Where the map is looking. Read by the smoke test; nothing else uses it. */
+/** Where the map is looking, once it is looking anywhere. Read by the tests. */
 export const view = () =>
   ready ? { centre: map.getCenter().toArray(), zoom: map.getZoom() } : null;
+
+/** Whether the engine has finished starting. Read by the tests. */
+export const mapReady = () => ready;
 
 export function flyTo(forest) {
   if (!ready || !forest) return;

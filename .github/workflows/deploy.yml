@@ -56,6 +56,12 @@ jobs:
       - name: Setup Pages
         if: github.ref == 'refs/heads/main'
         uses: actions/configure-pages@v5
+        with:
+          # Turn Pages on rather than expecting someone to have done it in the
+          # settings first. If this step fails with "Get Pages site failed",
+          # Pages is not available for the repository at all — which is the case
+          # for a private repository on a free plan.
+          enablement: true
 
       - name: Upload the site
         if: github.ref == 'refs/heads/main'
@@ -64,7 +70,9 @@ jobs:
           path: dist
 
   deploy:
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    # Manual runs publish too, which is what you want when working out why a
+    # publish did not happen.
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     needs: check
     runs-on: ubuntu-latest
     environment:

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mushr</title>
+  <meta name="description" content="Où et quand aller aux champignons dans les forêts publiques de France.">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+</head>
+<body class="h-screen overflow-hidden bg-shell">
+
+  <div class="flex h-full flex-col">
+
+    <!-- The two things the application does, promoted to primary navigation.
+         Everything else in this bar only qualifies whichever one is chosen. -->
+    <header class="relative z-40 flex shrink-0 flex-wrap items-center gap-x-5 gap-y-3 border-b border-line bg-panel px-5 py-3">
+      <div class="flex items-center gap-2">
+        <svg class="size-6 shrink-0 text-primary" viewBox="0 0 100 100" aria-hidden="true">
+          <path d="M10 46c0-20 18-34 40-34s40 14 40 34z" fill="none" stroke="currentColor" stroke-width="8"/>
+          <line x1="10" y1="46" x2="90" y2="46" stroke="currentColor" stroke-width="8"/>
+          <path d="M38 46v30c0 8 4 12 12 12s12-4 12-12V46" fill="none" stroke="currentColor" stroke-width="8"/>
+        </svg>
+        <span class="text-xl leading-none font-medium tracking-tight">mushr</span>
+      </div>
+
+      <nav class="flex gap-1 rounded-sm bg-raised p-1" role="tablist" aria-label="Mode">
+        <button class="mode-btn" data-mode="browse">
+          <span data-i18n="panel.mode.browse"></span>
+        </button>
+        <button class="mode-btn" data-mode="follow">
+          <span data-i18n="panel.mode.follow"></span>
+          <span class="count" id="followCount" hidden></span>
+        </button>
+      </nav>
+
+      <!-- The scope of everything below. It sits in the middle of the bar and
+           carries its own label, because choosing it is the first thing anyone
+           does and the last thing they should have to hunt for. -->
+      <!-- Centred with auto margins rather than absolute positioning. Absolute
+           centring overlapped the mode buttons below about 1100 px and quietly
+           swallowed their clicks; auto margins cannot overlap anything. The
+           language group keeps its own `ml-auto` so it stays right when Follow
+           hides this. -->
+      <label id="deptField" class="order-last flex w-full min-w-0 items-center gap-2.5 md:order-none md:mx-auto md:w-auto">
+        <span class="shrink-0 text-sm text-soft" data-i18n="panel.department"></span>
+        <select id="dept"
+          class="min-w-0 flex-1 rounded-md border border-line-strong bg-raised px-3 py-2 text-[0.9375rem] font-medium text-text md:w-80 md:flex-none"></select>
+      </label>
+
+      <div class="ml-auto flex items-center gap-2.5 text-xs font-semibold">
+        <button class="lang-btn" data-lang="fr">FR</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+    </header>
+
+    <div class="relative flex min-h-0 flex-1 flex-col md:flex-row">
+
+      <!-- Explore: ranking rail, analysis beside it, map behind. -->
+      <aside id="rail" class="order-2 z-30 flex min-h-0 w-full flex-1 flex-col border-t border-line bg-panel md:order-1 md:w-[23rem] md:flex-none md:border-t-0 md:border-r">
+        <div id="scopeBar" class="shrink-0 border-b border-line px-4 py-3.5">
+          <div id="dayStrip" class="flex gap-1" role="group" aria-label="Day"></div>
+          <details class="group mt-3.5">
+            <summary class="cursor-pointer list-none text-sm text-soft select-none marker:content-none">
+              <span data-i18n="panel.filters"></span>
+              <span class="inline-block transition-transform group-open:rotate-90">›</span>
+            </summary>
+            <div class="mt-3 space-y-3">
+              <label class="block text-sm">
+                <span class="text-soft" data-i18n="panel.sort"></span>
+                <select id="sort" class="mt-1 w-full rounded-sm border border-line-strong bg-raised px-2 py-1 text-sm">
+                  <option value="score" data-i18n="sort.score"></option>
+                  <option value="trend" data-i18n="sort.trend"></option>
+                  <option value="area" data-i18n="sort.area"></option>
+                  <option value="name" data-i18n="sort.name"></option>
+                </select>
+              </label>
+              <label class="block text-sm">
+                <span class="text-soft" data-i18n="panel.minArea"></span>
+                <span class="mt-1 flex items-center gap-2">
+                  <input type="range" id="minArea" min="20" max="1000" step="20" class="w-full accent-primary">
+                  <output id="minAreaOut" class="w-12 shrink-0 text-right tnum"></output>
+                </span>
+              </label>
+              <label class="block text-sm">
+                <span class="text-soft" data-i18n="panel.minScore"></span>
+                <span class="mt-1 flex items-center gap-2">
+                  <input type="range" id="minScore" min="0" max="80" step="5" class="w-full accent-primary">
+                  <output id="minScoreOut" class="w-12 shrink-0 text-right tnum"></output>
+                </span>
+              </label>
+              <fieldset id="ownership" class="space-y-1">
+                <legend class="text-sm text-soft" data-i18n="panel.ownership"></legend>
+              </fieldset>
+            </div>
+          </details>
+        </div>
+        <div id="list" class="min-h-0 flex-1 overflow-y-auto"></div>
+      </aside>
+
+      <!-- Analysis. Docked against the rail and over the map on purpose: once
+           you are reading why an index is what it is, the map is not the
+           question any more. -->
+      <aside id="detail" class="order-3 hidden fixed inset-0 z-30 overflow-y-auto bg-panel md:static md:w-[34rem] md:shrink-0 md:border-r md:border-line"></aside>
+
+      <div id="map" class="order-1 h-[40vh] shrink-0 md:order-4 md:h-auto md:min-w-0 md:flex-1"></div>
+
+      <!-- Follow: no map at all. A board of the forests you watch. -->
+      <section id="board" class="hidden min-h-0 flex-1 overflow-y-auto bg-shell"></section>
+    </div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

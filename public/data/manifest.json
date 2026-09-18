@@ -1,0 +1,1163 @@
+{
+  "area": {
+    "bbox": [
+      -4.7621,
+      41.4918,
+      9.5249,
+      50.8635
+    ],
+    "crs": "EPSG:4326",
+    "label": "France métropolitaine et Corse",
+    "min_area_ha": 20,
+    "scope": "france",
+    "simplify_m": 8
+  },
+  "dataset": "mushr-data",
+  "fields": {
+    "area_ha": {
+      "label": "Surface",
+      "source": "onf",
+      "type": "number",
+      "unit": "ha"
+    },
+    "broadleaf_pct": {
+      "label": "Feuillus",
+      "source": "bdforet",
+      "type": "number",
+      "unit": "%"
+    },
+    "conifer_pct": {
+      "label": "Conifères",
+      "source": "bdforet",
+      "type": "number",
+      "unit": "%"
+    },
+    "dept": {
+      "label": "Département",
+      "source": "onf",
+      "type": "category"
+    },
+    "edge_m_per_ha": {
+      "label": "Lisière par hectare",
+      "note": "Périmètre sur surface. Un massif découpé a plus de lisière, et la lisière fructifie autrement que le cœur.",
+      "source": "derived",
+      "type": "number",
+      "unit": "m/ha"
+    },
+    "elevation_m": {
+      "label": "Altitude au point de mesure",
+      "source": "ignalti",
+      "type": "number",
+      "unit": "m"
+    },
+    "lat": {
+      "label": "Latitude du point de mesure",
+      "source": "derived",
+      "type": "number",
+      "unit": "°"
+    },
+    "lon": {
+      "label": "Longitude du point de mesure",
+      "source": "derived",
+      "type": "number",
+      "unit": "°"
+    },
+    "mixed_pct": {
+      "label": "Peuplement mixte",
+      "source": "bdforet",
+      "type": "number",
+      "unit": "%"
+    },
+    "name": {
+      "label": "Nom du massif",
+      "note": "Aussi porté par les tuiles, pour l’étiquette carto. C’est le seul attribut volontairement présent dans les deux couches : une liste ou un tableau doit pouvoir nommer un massif sans charger de géométrie.",
+      "source": "onf",
+      "type": "text"
+    },
+    "neighbours": {
+      "label": "Massifs voisins",
+      "note": "Distance de bord à bord, en km.",
+      "source": "derived",
+      "type": "list"
+    },
+    "open_pct": {
+      "label": "Sans couvert arboré",
+      "source": "bdforet",
+      "type": "number",
+      "unit": "%"
+    },
+    "ownership": {
+      "label": "Statut foncier",
+      "source": "onf",
+      "type": "category",
+      "values": [
+        "domaniale",
+        "communale",
+        "departementale",
+        "regionale",
+        "autre-publique"
+      ]
+    },
+    "perimeter_m": {
+      "label": "Périmètre",
+      "source": "onf",
+      "type": "number",
+      "unit": "m"
+    },
+    "species": {
+      "label": "Essences dominantes",
+      "note": "Part de la surface décrite, essences au-dessus de 3 %.",
+      "source": "bdforet",
+      "type": "list"
+    },
+    "surveyed_pct": {
+      "label": "Part du massif décrite par BD Forêt",
+      "note": "En dessous de ~80 %, les parts par essence portent sur une fraction du massif seulement.",
+      "source": "bdforet",
+      "type": "number",
+      "unit": "%"
+    }
+  },
+  "generated": "2026-09-18T14:20:23Z",
+  "join": {
+    "key": "id",
+    "note": "Une entité de forests.pmtiles porte `id`; l’enregistrement correspondant est dans indicators/<dept>.json."
+  },
+  "layers": [
+    {
+      "bytes": 29633898,
+      "features": 13961,
+      "file": "forests.pmtiles",
+      "format": "PMTiles (vector tiles)",
+      "layer": "forests",
+      "maxzoom": 12,
+      "minzoom": 5,
+      "properties": [
+        "id",
+        "name"
+      ],
+      "role": "representation"
+    },
+    {
+      "departments": {
+        "01": {
+          "bbox": [
+            4.7989,
+            45.6112,
+            6.1335,
+            46.5134
+          ],
+          "bytes": 130225,
+          "forests": 254
+        },
+        "02": {
+          "bbox": [
+            2.9244,
+            48.9313,
+            4.2558,
+            50.0187
+          ],
+          "bytes": 37665,
+          "forests": 77
+        },
+        "03": {
+          "bbox": [
+            2.5035,
+            45.956,
+            3.831,
+            46.7045
+          ],
+          "bytes": 15191,
+          "forests": 32
+        },
+        "04": {
+          "bbox": [
+            5.5494,
+            43.6683,
+            6.9189,
+            44.6047
+          ],
+          "bytes": 113122,
+          "forests": 202
+        },
+        "05": {
+          "bbox": [
+            5.4183,
+            44.1905,
+            7.0134,
+            45.0592
+          ],
+          "bytes": 108781,
+          "forests": 195
+        },
+        "06": {
+          "bbox": [
+            6.6356,
+            43.5151,
+            7.7054,
+            44.3405
+          ],
+          "bytes": 87904,
+          "forests": 155
+        },
+        "07": {
+          "bbox": [
+            3.881,
+            44.2852,
+            4.8076,
+            45.2778
+          ],
+          "bytes": 60477,
+          "forests": 113
+        },
+        "08": {
+          "bbox": [
+            4.2143,
+            49.2367,
+            5.3932,
+            50.1415
+          ],
+          "bytes": 105610,
+          "forests": 203
+        },
+        "09": {
+          "bbox": [
+            0.8265,
+            42.5715,
+            2.1758,
+            43.2734
+          ],
+          "bytes": 89057,
+          "forests": 164
+        },
+        "10": {
+          "bbox": [
+            3.4075,
+            47.9126,
+            4.8564,
+            48.6316
+          ],
+          "bytes": 97489,
+          "forests": 191
+        },
+        "11": {
+          "bbox": [
+            1.859,
+            42.6802,
+            3.1965,
+            43.4393
+          ],
+          "bytes": 137709,
+          "forests": 237
+        },
+        "12": {
+          "bbox": [
+            1.948,
+            43.6906,
+            3.4518,
+            44.8743
+          ],
+          "bytes": 66146,
+          "forests": 125
+        },
+        "13": {
+          "bbox": [
+            4.3129,
+            43.1666,
+            5.8135,
+            43.9014
+          ],
+          "bytes": 63361,
+          "forests": 121
+        },
+        "14": {
+          "bbox": [
+            -1.0872,
+            48.7997,
+            0.2018,
+            49.4158
+          ],
+          "bytes": 5697,
+          "forests": 13
+        },
+        "15": {
+          "bbox": [
+            2.1545,
+            44.6586,
+            3.3623,
+            45.4229
+          ],
+          "bytes": 148334,
+          "forests": 289
+        },
+        "16": {
+          "bbox": [
+            -0.334,
+            45.2314,
+            0.9265,
+            46.0149
+          ],
+          "bytes": 6164,
+          "forests": 14
+        },
+        "17": {
+          "bbox": [
+            -1.5497,
+            45.1601,
+            -0.1601,
+            46.2578
+          ],
+          "bytes": 12170,
+          "forests": 26
+        },
+        "18": {
+          "bbox": [
+            1.7777,
+            46.5706,
+            3.0296,
+            47.621
+          ],
+          "bytes": 47370,
+          "forests": 95
+        },
+        "19": {
+          "bbox": [
+            1.3351,
+            44.9777,
+            2.5178,
+            45.7249
+          ],
+          "bytes": 88427,
+          "forests": 165
+        },
+        "21": {
+          "bbox": [
+            4.077,
+            46.9176,
+            5.52,
+            48.0312
+          ],
+          "bytes": 316117,
+          "forests": 608
+        },
+        "22": {
+          "bbox": [
+            -3.6023,
+            48.1831,
+            -1.9212,
+            48.8035
+          ],
+          "bytes": 18437,
+          "forests": 37
+        },
+        "23": {
+          "bbox": [
+            1.5461,
+            45.6931,
+            2.5434,
+            46.3924
+          ],
+          "bytes": 47957,
+          "forests": 87
+        },
+        "24": {
+          "bbox": [
+            0.1734,
+            44.6142,
+            1.3757,
+            45.65
+          ],
+          "bytes": 15015,
+          "forests": 30
+        },
+        "25": {
+          "bbox": [
+            5.7137,
+            46.6101,
+            7.0623,
+            47.5734
+          ],
+          "bytes": 309168,
+          "forests": 588
+        },
+        "26": {
+          "bbox": [
+            4.7218,
+            44.1312,
+            5.8223,
+            45.288
+          ],
+          "bytes": 99778,
+          "forests": 183
+        },
+        "27": {
+          "bbox": [
+            0.3406,
+            48.7122,
+            1.7036,
+            49.5242
+          ],
+          "bytes": 16924,
+          "forests": 35
+        },
+        "28": {
+          "bbox": [
+            0.8269,
+            48.0308,
+            1.7979,
+            48.8524
+          ],
+          "bytes": 4647,
+          "forests": 11
+        },
+        "29": {
+          "bbox": [
+            -4.7621,
+            47.7792,
+            -3.4135,
+            48.6962
+          ],
+          "bytes": 29508,
+          "forests": 59
+        },
+        "2A": {
+          "bbox": [
+            8.6253,
+            41.4918,
+            9.3875,
+            42.3604
+          ],
+          "bytes": 52816,
+          "forests": 98
+        },
+        "2B": {
+          "bbox": [
+            8.6228,
+            41.8322,
+            9.5249,
+            42.8868
+          ],
+          "bytes": 34535,
+          "forests": 64
+        },
+        "30": {
+          "bbox": [
+            3.3095,
+            43.4896,
+            4.7956,
+            44.4533
+          ],
+          "bytes": 92956,
+          "forests": 174
+        },
+        "31": {
+          "bbox": [
+            0.453,
+            42.7053,
+            1.6479,
+            43.8003
+          ],
+          "bytes": 93260,
+          "forests": 182
+        },
+        "32": {
+          "bbox": [
+            -0.2576,
+            43.3332,
+            1.1959,
+            44.0017
+          ],
+          "bytes": 16796,
+          "forests": 35
+        },
+        "33": {
+          "bbox": [
+            -1.2593,
+            44.3022,
+            -0.0187,
+            45.5681
+          ],
+          "bytes": 38767,
+          "forests": 78
+        },
+        "34": {
+          "bbox": [
+            2.5517,
+            43.2653,
+            4.1347,
+            43.9712
+          ],
+          "bytes": 84957,
+          "forests": 150
+        },
+        "35": {
+          "bbox": [
+            -2.2518,
+            47.9534,
+            -1.0803,
+            48.6112
+          ],
+          "bytes": 15231,
+          "forests": 29
+        },
+        "36": {
+          "bbox": [
+            1.0527,
+            46.3859,
+            2.1331,
+            47.1666
+          ],
+          "bytes": 9025,
+          "forests": 20
+        },
+        "37": {
+          "bbox": [
+            0.099,
+            46.86,
+            1.1505,
+            47.5863
+          ],
+          "bytes": 19305,
+          "forests": 39
+        },
+        "38": {
+          "bbox": [
+            4.8639,
+            44.7004,
+            6.3593,
+            45.8594
+          ],
+          "bytes": 157097,
+          "forests": 302
+        },
+        "39": {
+          "bbox": [
+            5.2899,
+            46.261,
+            6.2248,
+            47.2834
+          ],
+          "bytes": 273270,
+          "forests": 529
+        },
+        "40": {
+          "bbox": [
+            -1.5191,
+            43.497,
+            0.1329,
+            44.478
+          ],
+          "bytes": 71984,
+          "forests": 148
+        },
+        "41": {
+          "bbox": [
+            0.9943,
+            47.2984,
+            2.2095,
+            47.947
+          ],
+          "bytes": 6754,
+          "forests": 15
+        },
+        "42": {
+          "bbox": [
+            3.697,
+            45.238,
+            4.7182,
+            46.1746
+          ],
+          "bytes": 40667,
+          "forests": 74
+        },
+        "43": {
+          "bbox": [
+            3.2344,
+            44.7641,
+            4.466,
+            45.4244
+          ],
+          "bytes": 105430,
+          "forests": 200
+        },
+        "44": {
+          "bbox": [
+            -2.5035,
+            47.1246,
+            -1.397,
+            47.6213
+          ],
+          "bytes": 4817,
+          "forests": 11
+        },
+        "45": {
+          "bbox": [
+            1.7304,
+            47.5959,
+            2.9291,
+            48.0758
+          ],
+          "bytes": 6741,
+          "forests": 14
+        },
+        "46": {
+          "bbox": [
+            1.3397,
+            44.4856,
+            2.103,
+            44.9757
+          ],
+          "bytes": 8490,
+          "forests": 16
+        },
+        "47": {
+          "bbox": [
+            -0.0306,
+            44.0563,
+            0.4971,
+            44.4214
+          ],
+          "bytes": 7484,
+          "forests": 15
+        },
+        "48": {
+          "bbox": [
+            2.9956,
+            44.1096,
+            3.9843,
+            44.9758
+          ],
+          "bytes": 143330,
+          "forests": 263
+        },
+        "49": {
+          "bbox": [
+            -1.0157,
+            47.1504,
+            0.1802,
+            47.7253
+          ],
+          "bytes": 11011,
+          "forests": 22
+        },
+        "50": {
+          "bbox": [
+            -1.8676,
+            48.5971,
+            -1.1587,
+            49.5297
+          ],
+          "bytes": 5677,
+          "forests": 12
+        },
+        "51": {
+          "bbox": [
+            3.5692,
+            48.5302,
+            5.0369,
+            49.4065
+          ],
+          "bytes": 68655,
+          "forests": 137
+        },
+        "52": {
+          "bbox": [
+            4.6824,
+            47.5964,
+            5.8856,
+            48.6889
+          ],
+          "bytes": 223985,
+          "forests": 428
+        },
+        "53": {
+          "bbox": [
+            -1.0291,
+            47.8777,
+            -0.4147,
+            48.2895
+          ],
+          "bytes": 3037,
+          "forests": 8
+        },
+        "54": {
+          "bbox": [
+            5.428,
+            48.3489,
+            7.0749,
+            49.5551
+          ],
+          "bytes": 262628,
+          "forests": 522
+        },
+        "55": {
+          "bbox": [
+            4.9357,
+            48.4091,
+            5.8349,
+            49.6093
+          ],
+          "bytes": 254055,
+          "forests": 499
+        },
+        "56": {
+          "bbox": [
+            -3.5401,
+            47.5208,
+            -2.1332,
+            48.2092
+          ],
+          "bytes": 21359,
+          "forests": 42
+        },
+        "57": {
+          "bbox": [
+            5.9255,
+            48.529,
+            7.6401,
+            49.5103
+          ],
+          "bytes": 235574,
+          "forests": 455
+        },
+        "58": {
+          "bbox": [
+            2.9276,
+            46.7583,
+            4.2138,
+            47.5528
+          ],
+          "bytes": 105120,
+          "forests": 214
+        },
+        "59": {
+          "bbox": [
+            2.4796,
+            49.969,
+            4.2305,
+            50.782
+          ],
+          "bytes": 21536,
+          "forests": 44
+        },
+        "60": {
+          "bbox": [
+            1.7851,
+            49.1062,
+            3.0696,
+            49.6987
+          ],
+          "bytes": 27731,
+          "forests": 56
+        },
+        "61": {
+          "bbox": [
+            -0.7182,
+            48.3783,
+            0.822,
+            48.8613
+          ],
+          "bytes": 9876,
+          "forests": 21
+        },
+        "62": {
+          "bbox": [
+            1.5664,
+            50.0691,
+            3.033,
+            50.8635
+          ],
+          "bytes": 15960,
+          "forests": 35
+        },
+        "63": {
+          "bbox": [
+            2.4515,
+            45.2871,
+            3.9742,
+            46.2254
+          ],
+          "bytes": 250474,
+          "forests": 490
+        },
+        "64": {
+          "bbox": [
+            -1.7487,
+            42.7837,
+            0.0255,
+            43.5259
+          ],
+          "bytes": 101166,
+          "forests": 195
+        },
+        "65": {
+          "bbox": [
+            -0.2877,
+            42.694,
+            0.6237,
+            43.5333
+          ],
+          "bytes": 150849,
+          "forests": 288
+        },
+        "66": {
+          "bbox": [
+            1.7871,
+            42.3407,
+            3.1732,
+            42.8964
+          ],
+          "bytes": 59318,
+          "forests": 108
+        },
+        "67": {
+          "bbox": [
+            6.9619,
+            48.121,
+            8.228,
+            49.0773
+          ],
+          "bytes": 180079,
+          "forests": 334
+        },
+        "68": {
+          "bbox": [
+            6.8428,
+            47.4236,
+            7.6104,
+            48.3112
+          ],
+          "bytes": 171574,
+          "forests": 322
+        },
+        "69": {
+          "bbox": [
+            4.312,
+            45.5244,
+            5.0476,
+            46.2627
+          ],
+          "bytes": 14949,
+          "forests": 30
+        },
+        "70": {
+          "bbox": [
+            5.401,
+            47.2607,
+            6.9296,
+            48.0314
+          ],
+          "bytes": 277812,
+          "forests": 533
+        },
+        "71": {
+          "bbox": [
+            3.7663,
+            46.2505,
+            5.4623,
+            47.1159
+          ],
+          "bytes": 159077,
+          "forests": 309
+        },
+        "72": {
+          "bbox": [
+            -0.3561,
+            47.732,
+            0.7452,
+            48.4358
+          ],
+          "bytes": 7263,
+          "forests": 15
+        },
+        "73": {
+          "bbox": [
+            5.6841,
+            45.1149,
+            7.0386,
+            45.9329
+          ],
+          "bytes": 150654,
+          "forests": 289
+        },
+        "74": {
+          "bbox": [
+            5.818,
+            45.6767,
+            6.9627,
+            46.4077
+          ],
+          "bytes": 119732,
+          "forests": 232
+        },
+        "76": {
+          "bbox": [
+            0.1761,
+            49.2624,
+            1.7469,
+            50.0349
+          ],
+          "bytes": 22572,
+          "forests": 46
+        },
+        "77": {
+          "bbox": [
+            2.4685,
+            48.2194,
+            3.5073,
+            49.0497
+          ],
+          "bytes": 24654,
+          "forests": 49
+        },
+        "78": {
+          "bbox": [
+            1.5474,
+            48.5681,
+            2.1915,
+            49.0718
+          ],
+          "bytes": 25050,
+          "forests": 50
+        },
+        "79": {
+          "bbox": [
+            -0.4744,
+            46.0035,
+            0.0891,
+            46.5988
+          ],
+          "bytes": 3191,
+          "forests": 7
+        },
+        "80": {
+          "bbox": [
+            1.517,
+            49.7745,
+            2.3951,
+            50.2757
+          ],
+          "bytes": 2869,
+          "forests": 7
+        },
+        "81": {
+          "bbox": [
+            1.6964,
+            43.3829,
+            2.9279,
+            44.1139
+          ],
+          "bytes": 28354,
+          "forests": 52
+        },
+        "82": {
+          "bbox": [
+            0.8413,
+            43.9244,
+            1.7549,
+            44.197
+          ],
+          "bytes": 2510,
+          "forests": 6
+        },
+        "83": {
+          "bbox": [
+            5.6559,
+            43.0468,
+            6.9304,
+            43.8074
+          ],
+          "bytes": 100470,
+          "forests": 181
+        },
+        "84": {
+          "bbox": [
+            4.7228,
+            43.6694,
+            5.737,
+            44.3118
+          ],
+          "bytes": 54094,
+          "forests": 95
+        },
+        "85": {
+          "bbox": [
+            -2.3073,
+            46.2894,
+            -0.6057,
+            47.025
+          ],
+          "bytes": 13697,
+          "forests": 29
+        },
+        "86": {
+          "bbox": [
+            0.059,
+            46.3419,
+            0.9784,
+            47.1028
+          ],
+          "bytes": 6333,
+          "forests": 14
+        },
+        "87": {
+          "bbox": [
+            0.813,
+            45.5785,
+            1.9099,
+            46.3939
+          ],
+          "bytes": 39938,
+          "forests": 78
+        },
+        "88": {
+          "bbox": [
+            5.3937,
+            47.8136,
+            7.1986,
+            48.511
+          ],
+          "bytes": 289315,
+          "forests": 538
+        },
+        "89": {
+          "bbox": [
+            2.9128,
+            47.3107,
+            4.34,
+            48.3402
+          ],
+          "bytes": 123594,
+          "forests": 243
+        },
+        "90": {
+          "bbox": [
+            6.7564,
+            47.4427,
+            7.1381,
+            47.818
+          ],
+          "bytes": 51361,
+          "forests": 98
+        },
+        "91": {
+          "bbox": [
+            1.9117,
+            48.3952,
+            2.5481,
+            48.777
+          ],
+          "bytes": 19780,
+          "forests": 39
+        },
+        "92": {
+          "bbox": [
+            2.1308,
+            48.7825,
+            2.265,
+            48.862
+          ],
+          "bytes": 1606,
+          "forests": 3
+        },
+        "93": {
+          "bbox": [
+            2.5529,
+            48.9037,
+            2.5925,
+            48.9261
+          ],
+          "bytes": 488,
+          "forests": 1
+        },
+        "94": {
+          "bbox": [
+            2.462,
+            48.7221,
+            2.6545,
+            48.8029
+          ],
+          "bytes": 1519,
+          "forests": 3
+        },
+        "95": {
+          "bbox": [
+            1.6285,
+            48.9636,
+            2.5507,
+            49.1909
+          ],
+          "bytes": 7751,
+          "forests": 16
+        },
+        "DE": {
+          "bbox": [
+            7.8978,
+            49.0401,
+            7.9377,
+            49.0855
+          ],
+          "bytes": 519,
+          "forests": 1
+        }
+      },
+      "file": "indicators/<dept>.json",
+      "format": "JSON index keyed by id",
+      "records": 13961,
+      "role": "indicators"
+    }
+  ],
+  "sources": [
+    {
+      "access": "WFS",
+      "id": "onf",
+      "licence": "Licence Ouverte 2.0",
+      "name": "ONF.FORETS_PUBLIQUES",
+      "provider": "Office national des forêts / IGN Géoplateforme",
+      "refresh": "annuel",
+      "used_for": [
+        "contours",
+        "nom",
+        "statut foncier",
+        "département"
+      ]
+    },
+    {
+      "access": "archives départementales",
+      "id": "bdforet",
+      "licence": "Licence Ouverte 2.0",
+      "name": "BD Forêt V2",
+      "provider": "IGN",
+      "refresh": "décennal",
+      "used_for": [
+        "essences",
+        "type de couvert"
+      ]
+    },
+    {
+      "access": "API publique",
+      "id": "ignalti",
+      "licence": "Licence Ouverte 2.0",
+      "name": "RGE ALTI",
+      "provider": "IGN, service altimétrie Géoplateforme",
+      "refresh": "rare",
+      "used_for": [
+        "altitude"
+      ]
+    },
+    {
+      "access": "local",
+      "id": "derived",
+      "licence": "MIT",
+      "name": "calculs géométriques",
+      "provider": "mushr-data",
+      "refresh": "à chaque build",
+      "used_for": [
+        "surface",
+        "périmètre",
+        "point de mesure",
+        "voisinage"
+      ]
+    }
+  ]
+}

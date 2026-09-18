@@ -1,0 +1,208 @@
+@import "tailwindcss";
+
+/* Cover-bar fills are built from a key at runtime, so Tailwind cannot see them
+   in the source. */
+@source inline("bg-broadleaf bg-conifer bg-mixed bg-open");
+
+/*
+ * mushr — a dark instrument over a bright map.
+ *
+ * The split is the whole idea. The map is a document: pale, quiet, legible,
+ * something you read a landscape off. Everything you *operate* — the ranking,
+ * the day strip, the analysis — is a dark console laid over it, so the two never
+ * compete and you always know which one you are looking at.
+ *
+ * On the console, colour means one thing only: the 0-100 index. Its ramp is
+ * deliberately electric — dead slate, then orange, yellow, lime, spring green —
+ * because on a near-black panel a muted ramp reads as broken, and because the
+ * whole page exists to answer "how good is it, right now" at a glance.
+ */
+
+@theme {
+  /* Graphite with a green cast, not black. A near-black panel turns every
+     electric colour on it into a glow and every edge into a guess; graphite
+     gives the ramp something to sit on and lets a hairline read as a hairline. */
+  --color-shell: #171a18;
+  --color-panel: #1e2320;
+  --color-raised: #272d29;
+  --color-line: #353d38;
+  --color-line-strong: #4c574f;
+  --color-text: #edf2ee;
+  --color-soft: #a6b1a9;
+  --color-faint: #7c887f;
+
+  /* The application's own colour, taken from the mark. It is the accent on
+     every control — active mode, chosen day, focus ring, filled bar — and it is
+     never used to mean a measurement. That job belongs to the ramp below.
+     It shares a value with the top band, which is a coincidence of the mark
+     being green and not a reason to use one for the other. */
+  --color-primary: #00f5a0;
+
+  /* The index ramp, and only the index. Repeated once in src/map.js, which is
+     JSON and cannot read a custom property. */
+  --color-band-none: #47554c;
+  --color-band-poor: #ff6b35;
+  --color-band-fair: #ffd60a;
+  --color-band-good: #a3ff12;
+  --color-band-excellent: #00f5a0;
+
+  --color-rain: #00d4ff;
+  --color-moisture: #5eead4;
+  --color-soil: #ff9e64;
+
+  --color-broadleaf: #a3ff12;
+  --color-conifer: #00f5a0;
+  --color-mixed: #c084fc;
+  --color-open: #5a6a60;
+
+  --font-sans: "Manrope Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html { color-scheme: dark; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--color-shell);
+    color: var(--color-text);
+  }
+  .tnum, table, .index-figure { font-variant-numeric: tabular-nums; }
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--color-shell); }
+  ::-webkit-scrollbar-thumb { background: var(--color-line-strong); border: 3px solid var(--color-shell); }
+}
+
+@layer components {
+  /* The index numeral: the one loud thing on the page. Manrope's figures are
+     open and evenly weighted, so they hold a saturated colour at display size
+     without smearing. */
+  .index-figure {
+    font-weight: 600;
+    line-height: 0.82;
+    letter-spacing: -0.045em;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  .band-none { color: var(--color-band-none); }
+  .band-poor { color: var(--color-band-poor); }
+  .band-fair { color: var(--color-band-fair); }
+  .band-good { color: var(--color-band-good); }
+  .band-excellent { color: var(--color-band-excellent); }
+  .band-unknown { color: var(--color-faint); }
+
+  .edge-band-none { box-shadow: inset 2px 0 0 var(--color-band-none); }
+  .edge-band-poor { box-shadow: inset 2px 0 0 var(--color-band-poor); }
+  .edge-band-fair { box-shadow: inset 2px 0 0 var(--color-band-fair); }
+  .edge-band-good { box-shadow: inset 2px 0 0 var(--color-band-good); }
+  .edge-band-excellent { box-shadow: inset 2px 0 0 var(--color-band-excellent); }
+  .edge-band-unknown { box-shadow: inset 2px 0 0 var(--color-line-strong); }
+
+  /* Primary navigation: the two things the application does. Big enough to be
+     a choice rather than a tab. */
+  .mode-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 1rem;
+    border-radius: 0.375rem;
+    color: var(--color-soft);
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .mode-btn:hover { color: var(--color-text); }
+  .mode-btn.is-active {
+    background: var(--color-primary);
+    color: #0d1410;
+  }
+  .mode-btn .count {
+    font-variant-numeric: tabular-nums;
+    font-size: 0.75rem;
+    padding: 0 0.35rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, currentColor 18%, transparent);
+  }
+
+  .lang-btn { color: var(--color-faint); cursor: pointer; }
+  .lang-btn:hover { color: var(--color-text); }
+  .lang-btn.is-active { color: var(--color-primary); }
+
+  /* The day strip. Seven cramped boxes with "J+4" in them told you nothing you
+     could act on; a weekday and a date do. */
+  .day-btn {
+    flex: 1 1 0%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1rem;
+    padding: 0.45rem 0.15rem;
+    border-radius: 0.375rem;
+    color: var(--color-soft);
+    cursor: pointer;
+    line-height: 1.1;
+  }
+  .day-btn:hover { background: var(--color-raised); color: var(--color-text); }
+  .day-btn .dow { font-size: 0.6875rem; text-transform: lowercase; }
+  .day-btn .dom { font-size: 0.9375rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .day-btn.is-active {
+    background: var(--color-primary);
+    color: #0d1410;
+  }
+  .day-btn.is-active .dow { opacity: 0.75; }
+}
+
+/* ------------------------------------------------------------------ charts */
+
+.chart { display: block; width: 100%; height: auto; }
+
+.axis { stroke: var(--color-line-strong); stroke-width: 1; }
+.grid { stroke: var(--color-line); stroke-width: 1; }
+.today { stroke: var(--color-soft); stroke-width: 1; stroke-dasharray: 2 2; opacity: 0.7; }
+
+.bar { fill: var(--color-band-none); }
+.bar.band-none { fill: var(--color-band-none); }
+.bar.band-poor { fill: var(--color-band-poor); }
+.bar.band-fair { fill: var(--color-band-fair); }
+.bar.band-good { fill: var(--color-band-good); }
+.bar.band-excellent { fill: var(--color-band-excellent); }
+/* The forecast is the same measurement from thinner evidence: same colour,
+   dimmer — not a different colour, which would read as a different thing. */
+.bar.future { opacity: 0.45; }
+
+.series-bar { fill: var(--color-rain); }
+.series-line { fill: none; stroke-width: 1.5; }
+.series-moisture { stroke: var(--color-moisture); }
+.series-soilTemp { stroke: var(--color-soil); }
+
+.chart-wrap { position: relative; }
+.chart-now {
+  position: absolute;
+  top: -0.1rem;
+  font-size: 0.6875rem;
+  color: var(--color-faint);
+  padding-left: 0.25rem;
+  pointer-events: none;
+}
+.chart-axis {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.6875rem;
+  color: var(--color-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------- maplibre */
+/* The map keeps its own light world; only its furniture joins the console. */
+
+.maplibregl-ctrl-attrib {
+  background: rgb(255 255 255 / 0.85) !important;
+  font-family: var(--font-sans);
+  font-size: 0.625rem;
+}
+.maplibregl-ctrl-attrib a { color: #4a5a50 !important; }
+.maplibregl-ctrl-group { border: 1px solid rgb(0 0 0 / 0.15); box-shadow: none; }

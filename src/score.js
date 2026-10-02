@@ -61,6 +61,20 @@ export const MODEL = {
   trigger: { wetDay: 3, minTotal: 20, gap: 1, flush: [10, 20], peak: 15 },
 };
 
+/**
+ * The optimists' index: the same model, except that any rain counts.
+ *
+ * The cautious index gives nothing for less than 10 mm of incubation rain, and
+ * through the geometric mean that zeroes the whole index. After a dry spell
+ * almost every forest then reads 0, and a forest that got 8 mm looks the same
+ * as one that got none. Here the rain ramp starts at 0 mm, so those forests are
+ * told apart. Only thresholds differ: the kernel and the hourly thermal fitness
+ * are shared, so overriding `kernel` or `soilTemp` here would be ignored.
+ */
+export const OPTIMIST = { ...MODEL, rain: { ...MODEL.rain, zero: 0 } };
+
+export const MODELS = { cautious: MODEL, optimist: OPTIMIST };
+
 const clamp01 = (x) => (x < 0 ? 0 : x > 1 ? 1 : x);
 
 /** Shift an ISO date by whole days. Noon avoids any DST edge. */
@@ -192,8 +206,8 @@ const min = (rows, key) => {
  * Index for `series[i]`. Returns null when the response window or the soil
  * data needed for that day is missing.
  */
-export function scoreForDay(series, i) {
-  const { kernel, continuity, shock, weights } = MODEL;
+export function scoreForDay(series, i, model = MODEL) {
+  const { kernel, continuity, shock, weights } = model;
   const start = i - kernel.max;
   if (start < 0) return null;
   const row = series[i];
@@ -206,10 +220,10 @@ export function scoreForDay(series, i) {
   );
 
   const factors = {
-    rain: ramp(incubationRain, MODEL.rain.zero, MODEL.rain.full),
-    moisture: ramp(row.moisture, MODEL.moisture.zero, MODEL.moisture.full),
+    rain: ramp(incubationRain, model.rain.zero, model.rain.full),
+    moisture: ramp(row.moisture, model.moisture.zero, model.moisture.full),
     // Older cached rows carry no hourly fitness; the daily mean stands in.
-    soilTemp: row.soilTempFit ?? trapezoid(row.soilTemp, MODEL.soilTemp),
+    soilTemp: row.soilTempFit ?? trapezoid(row.soilTemp, model.soilTemp),
   };
 
   // Did the ground stay damp between the trigger rain and today? The driest
@@ -225,9 +239,9 @@ export function scoreForDay(series, i) {
   const interruption =
     continuity.max * severity * (1 - continuity.relief * reserve);
 
-  const frostRows = series.slice(Math.max(0, i - MODEL.frost.window + 1), i + 1);
+  const frostRows = series.slice(Math.max(0, i - model.frost.window + 1), i + 1);
   const coldest = Math.min(...frostRows.map((r) => r.tmin ?? 99));
-  const frost = coldest < MODEL.frost.threshold ? 1 : 0;
+  const frost = coldest < model.frost.threshold ? 1 : 0;
 
   // Soil cooling over the last few days, a trigger in its own right.
   const before = series[i - shock.days]?.soilTemp;
@@ -268,8 +282,8 @@ export function scoreForDay(series, i) {
 }
 
 /** Index for every day of the series; entries are null where uncomputable. */
-export function scoreSeries(series) {
-  return series.map((_, i) => scoreForDay(series, i));
+export function scoreSeries(series, model = MODEL) {
+  return series.map((_, i) => scoreForDay(series, i, model));
 }
 
 /**
@@ -313,6 +327,21 @@ export function detectTriggers(series) {
         flushEnd: addDays(end, flush[1]),
       };
     });
+}
+
+/**
+ * The flush still to come or under way at `series[i]`: the latest trigger
+ * episode up to that day whose fruiting window has not ended yet.
+ *
+ * This is what a 0 cannot say on its own. Right after a heavy rain the index is
+ * still nil — the mycelium has not had time — but the flush is already on its
+ * way, and it may fall past the last day the forecast can score.
+ */
+export function expectedFlush(series, i) {
+  const today = series[i]?.date;
+  if (!today) return null;
+  const episodes = detectTriggers(series.slice(0, i + 1));
+  return episodes.filter((e) => e.flushEnd >= today).at(-1) ?? null;
 }
 
 /**

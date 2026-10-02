@@ -24,6 +24,7 @@ const DEFAULTS = {
   selected: null,
   day: 0, // offset in days from today, 0 = today
   mode: "browse", // browse a department, or follow the forests you picked
+  index: "cautious", // which index is shown: "cautious" or "optimist"
   // The band last shown for each followed forest, so the next visit can say
   // what changed. Without a server this is the only alert the application can
   // raise, and it covers the real need: not missing a window for want of

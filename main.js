@@ -27,10 +27,10 @@ import { departmentName } from "./src/departments.js";
 import { initMap, onForestClick, paint, fitBBox, flyTo, view, mapReady } from "./src/map.js";
 import {
   state, onRender, render, selectDepartment, loadFollowed, noteDepartment,
-  setDay, setSelected, visibleForests, bandOf, forestById, retry, FORECAST_DAYS, TODAY_INDEX,
+  setDay, setSelected, setIndex, visibleForests, bandOf, forestById, retry, FORECAST_DAYS, TODAY_INDEX,
 } from "./src/state.js";
 import { getPrefs, setPrefs, toggleFavourite, isFavourite } from "./src/store.js";
-import { listHTML, waitBody } from "./src/list.js";
+import { listHTML, waitBody, indexToggleHTML } from "./src/list.js";
 import { boardHTML } from "./src/board.js";
 import { detailHTML } from "./src/detail.js";
 
@@ -200,6 +200,7 @@ function draw() {
   // page would find both.
   $("#board").innerHTML = following ? boardHTML() : "";
   $("#list").innerHTML = following ? "" : listHTML();
+  $("#indexToggle").innerHTML = following ? "" : indexToggleHTML();
 
   const detail = $("#detail");
   detail.innerHTML = state.selected ? detailHTML(state.selected) : "";
@@ -264,6 +265,12 @@ async function start() {
   });
   document.querySelectorAll(".mode-btn").forEach((btn) => {
     btn.addEventListener("click", () => setMode(btn.dataset.mode));
+  });
+  // The index switch is drawn in the rail and on the board, so it is caught
+  // here rather than wired to either copy.
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-index]");
+    if (btn) setIndex(btn.dataset.index);
   });
 
   // The list, the board, the detail sheet and the map all select the same way.

@@ -15,13 +15,45 @@ import { esc, num } from "./html.js";
 import { t, locale } from "./i18n.js";
 import { limiting } from "./score.js";
 import { sparkline } from "./charts.js";
-import { state, visibleForests, entryFor, bandOf, TODAY_INDEX, CHART_FROM } from "./state.js";
+import { state, visibleForests, entryFor, bandOf, flushFor, TODAY_INDEX, CHART_FROM } from "./state.js";
+import { getPrefs } from "./store.js";
+
+const shortDate = (iso) =>
+  new Date(`${iso}T12:00:00`).toLocaleDateString(locale(), { day: "numeric", month: "short" });
+
+/** "Flush expected from 12 to 17 Oct", or "" when no rain has set one off. */
+export function flushText(forest) {
+  const flush = flushFor(forest);
+  return flush
+    ? t("flush.expected", { start: shortDate(flush.flushStart), end: shortDate(flush.flushEnd) })
+    : "";
+}
+
+/** The cautious / optimists' index switch, shared by the rail and the board. */
+export function indexToggleHTML() {
+  const current = getPrefs().index;
+  return (
+    `<span class="flex items-center gap-2 text-sm">` +
+    `<span class="text-soft">${t("index.label")}</span>` +
+    `<span class="flex gap-1 rounded-sm bg-raised p-0.5" role="group" aria-label="${t("index.label")}">` +
+    ["cautious", "optimist"]
+      .map(
+        (k) =>
+          `<button type="button" data-index="${k}" aria-pressed="${k === current}" ` +
+          `class="rounded-sm px-2.5 py-1 ${k === current ? "bg-primary font-semibold text-shell" : "text-soft hover:text-text"}">` +
+          `${t(`index.${k}`)}</button>`,
+      )
+      .join("") +
+    `</span></span>`
+  );
+}
 
 function row(forest) {
   const entry = entryFor(forest);
   const key = bandOf(forest).key;
   const hold = entry ? limiting(entry) : null;
   const selected = state.selected === forest.id;
+  const flush = flushText(forest);
 
   // "Communale, 29 ha" reads as a sentence fragment; the same facts joined by
   // middle dots read as machine output.
@@ -45,6 +77,7 @@ function row(forest) {
       ? `<span class="mt-1 block text-sm text-faint">` +
         `${t("limiting.prefix")} ${t(`limiting.${hold.key}`)}</span>`
       : "") +
+    (flush ? `<span data-flush class="mt-1 block text-sm text-rain">${esc(flush)}</span>` : "") +
     `<span data-spark class="mt-2.5 block">${sparkline(forest.scores, TODAY_INDEX, { from: CHART_FROM, height: 32 })}</span>` +
     `</span></button></li>`
   );

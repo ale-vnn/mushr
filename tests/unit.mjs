@@ -13,7 +13,9 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import { groupByCell } from "../src/weather.js";
-import { MODEL, ramp, trapezoid, band, BANDS, scoreForDay, detectTriggers, addDays } from "../src/score.js";
+import {
+  MODEL, OPTIMIST, ramp, trapezoid, band, BANDS, scoreForDay, detectTriggers, expectedFlush, addDays,
+} from "../src/score.js";
 
 // ------------------------------------------------------------- grid grouping
 
@@ -140,4 +142,29 @@ test("trigger episodes are found, and their flush window follows the rain", () =
 
 test("a drizzle is not an episode", () => {
   assert.deepEqual(detectTriggers(series(20, IDEAL, { 5: { precip: 2 } })), []);
+});
+
+test("the optimists' index counts a light rain the cautious one ignores", () => {
+  const light = Object.fromEntries([25, 26].map((i) => [i, { precip: 3 }]));
+  const s = series(40, IDEAL, light);
+  assert.equal(scoreForDay(s, 39).score, 0);
+  assert.ok(scoreForDay(s, 39, OPTIMIST).score > 0);
+});
+
+test("the optimists' index never reads below the cautious one", () => {
+  const wet = Object.fromEntries([25, 26, 27].map((i) => [i, { precip: 8 }]));
+  const s = series(40, IDEAL, wet);
+  assert.ok(scoreForDay(s, 39, OPTIMIST).score >= scoreForDay(s, 39).score);
+});
+
+test("a recent downpour announces its flush while the index is still nil", () => {
+  const s = series(40, IDEAL, { 37: { precip: 15 }, 38: { precip: 15 } });
+  assert.equal(scoreForDay(s, 39).score, 0);
+  const flush = expectedFlush(s, 39);
+  assert.equal(flush.flushStart, addDays(s[38].date, MODEL.trigger.flush[0]));
+});
+
+test("a flush whose window has passed is not expected any more", () => {
+  const s = series(40, IDEAL, { 5: { precip: 15 }, 6: { precip: 15 } });
+  assert.equal(expectedFlush(s, 39), null);
 });

@@ -20,7 +20,7 @@ import { limiting } from "./score.js";
 import { scoreChart } from "./charts.js";
 import { departmentName } from "./departments.js";
 import { state, visibleForests, entryFor, bandOf, TODAY_INDEX, CHART_FROM } from "./state.js";
-import { quotaHTML } from "./list.js";
+import { quotaHTML, flushText, indexToggleHTML } from "./list.js";
 
 function change(id) {
   const c = state.changes[id];
@@ -41,6 +41,7 @@ function card(forest) {
   const key = bandOf(forest).key;
   const hold = entry ? limiting(entry) : null;
   const selected = state.selected === forest.id;
+  const flush = flushText(forest);
 
   return (
     `<li data-forest data-id="${esc(forest.id)}">` +
@@ -60,6 +61,7 @@ function card(forest) {
     (hold
       ? `<span class="text-sm text-soft">${t("limiting.prefix")} ${t(`limiting.${hold.key}`)}</span>`
       : "") +
+    (flush ? `<span data-flush class="text-sm text-rain">${esc(flush)}</span>` : "") +
     `</span>` +
 
     // With no map to share the screen, a card can afford the whole chart rather
@@ -87,7 +89,9 @@ export function boardHTML() {
   const forests = visibleForests();
   return (
     `<div class="mx-auto max-w-6xl px-4 py-5 md:px-6 md:py-7">` +
-    `<h2 class="mb-4 text-sm text-soft">${t("follow.heading", { n: forests.length })}</h2>` +
+    `<div class="mb-4 flex flex-wrap items-center justify-between gap-3">` +
+    `<h2 class="text-sm text-soft">${t("follow.heading", { n: forests.length })}</h2>` +
+    `${indexToggleHTML()}</div>` +
     `<ul class="grid gap-4 md:grid-cols-2 md:gap-5">${forests.map(card).join("")}</ul>` +
     `</div>`
   );

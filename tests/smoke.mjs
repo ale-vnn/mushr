@@ -263,6 +263,26 @@ try {
     );
     check(reachable, `the mode buttons are clickable at ${width} px`);
   }
+
+  // On a phone the sheet covers the screen. It once opened under the header and
+  // the ranking rail, present and laid out but impossible to touch.
+  await page.setViewport({ width: 390, height: 844 });
+  await new Promise((r) => setTimeout(r, 200));
+  await page.click("[data-forest] button");
+  await new Promise((r) => setTimeout(r, 300));
+  check(
+    await page.evaluate(() => {
+      const sheet = document.querySelector("#detail");
+      return [[195, 40], [195, 600]].every(([x, y]) => sheet.contains(document.elementFromPoint(x, y)));
+    }),
+    "the detail sheet covers the screen at 390 px",
+  );
+  await page.goBack();
+  await new Promise((r) => setTimeout(r, 300));
+  check(
+    await page.evaluate(() => window.__mushr.state.selected === null),
+    "Back closes the detail sheet instead of leaving the page",
+  );
   await page.setViewport({ width: 1280, height: 900 });
 
   // The race the fix is for: choose a department before MapLibre has finished

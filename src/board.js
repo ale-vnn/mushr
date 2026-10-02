@@ -86,9 +86,9 @@ export function boardHTML() {
 
   const forests = visibleForests();
   return (
-    `<div class="mx-auto max-w-6xl px-6 py-7">` +
+    `<div class="mx-auto max-w-6xl px-4 py-5 md:px-6 md:py-7">` +
     `<h2 class="mb-4 text-sm text-soft">${t("follow.heading", { n: forests.length })}</h2>` +
-    `<ul class="grid gap-5 md:grid-cols-2">${forests.map(card).join("")}</ul>` +
+    `<ul class="grid gap-4 md:grid-cols-2 md:gap-5">${forests.map(card).join("")}</ul>` +
     `</div>`
   );
 }

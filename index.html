@@ -8,20 +8,24 @@
   <meta name="color-scheme" content="dark">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
-<body class="h-screen overflow-hidden bg-shell">
+<!-- dvh, not vh: on a phone 100vh is the height with the address bar
+       retracted, which pushes the bottom of the list off screen. -->
+<body class="h-dvh overflow-hidden bg-shell">
 
   <div class="flex h-full flex-col">
 
     <!-- The two things the application does, promoted to primary navigation.
          Everything else in this bar only qualifies whichever one is chosen. -->
-    <header class="relative z-40 flex shrink-0 flex-wrap items-center gap-x-5 gap-y-3 border-b border-line bg-panel px-5 py-3">
+    <header class="relative z-40 flex shrink-0 flex-wrap items-center gap-x-3 gap-y-3 md:gap-x-5 border-b border-line bg-panel px-4 py-3 md:px-5">
       <div class="flex items-center gap-2">
         <svg class="size-6 shrink-0 text-primary" viewBox="0 0 100 100" aria-hidden="true">
           <path d="M10 46c0-20 18-34 40-34s40 14 40 34z" fill="none" stroke="currentColor" stroke-width="8"/>
           <line x1="10" y1="46" x2="90" y2="46" stroke="currentColor" stroke-width="8"/>
           <path d="M38 46v30c0 8 4 12 12 12s12-4 12-12V46" fill="none" stroke="currentColor" stroke-width="8"/>
         </svg>
-        <span class="text-xl leading-none font-medium tracking-tight">mushr</span>
+        <!-- The word gives way below sm so the mode and language controls keep
+             one row on a phone; the mark stays. -->
+        <span class="hidden text-xl leading-none font-medium tracking-tight sm:inline">mushr</span>
       </div>
 
       <nav class="flex gap-1 rounded-sm bg-raised p-1" role="tablist" aria-label="Mode">
@@ -48,7 +52,7 @@
           class="min-w-0 flex-1 rounded-md border border-line-strong bg-raised px-3 py-2 text-[0.9375rem] font-medium text-text md:w-80 md:flex-none"></select>
       </label>
 
-      <div class="ml-auto flex items-center gap-2.5 text-xs font-semibold">
+      <div class="ml-auto flex items-center gap-1 text-xs font-semibold">
         <button class="lang-btn" data-lang="fr">FR</button>
         <button class="lang-btn" data-lang="en">EN</button>
       </div>
@@ -57,7 +61,10 @@
     <div class="relative flex min-h-0 flex-1 flex-col md:flex-row">
 
       <!-- Explore: ranking rail, analysis beside it, map behind. -->
-      <aside id="rail" class="order-2 z-30 flex min-h-0 w-full flex-1 flex-col border-t border-line bg-panel md:order-1 md:w-[23rem] md:flex-none md:border-t-0 md:border-r">
+      <!-- On a phone the whole rail scrolls, filters included: with the map
+           above it, an opened filter block would otherwise squeeze the list
+           to nothing. From md the list scrolls alone under a fixed scope bar. -->
+      <aside id="rail" class="order-2 z-30 flex min-h-0 w-full flex-1 flex-col overflow-y-auto border-t border-line bg-panel md:order-1 md:overflow-hidden md:w-[23rem] md:flex-none md:border-t-0 md:border-r">
         <div id="scopeBar" class="shrink-0 border-b border-line px-4 py-3.5">
           <div id="dayStrip" class="flex gap-1" role="group" aria-label="Day"></div>
           <details class="group mt-3.5">
@@ -95,15 +102,17 @@
             </div>
           </details>
         </div>
-        <div id="list" class="min-h-0 flex-1 overflow-y-auto"></div>
+        <div id="list" class="md:min-h-0 md:flex-1 md:overflow-y-auto"></div>
       </aside>
 
       <!-- Analysis. Docked against the rail and over the map on purpose: once
            you are reading why an index is what it is, the map is not the
            question any more. -->
-      <aside id="detail" class="order-3 hidden fixed inset-0 z-30 overflow-y-auto bg-panel md:static md:w-[34rem] md:shrink-0 md:border-r md:border-line"></aside>
+      <!-- Below md it covers the screen, header included, hence z-50: at z-30 it
+           sat under the header and under the rail, which shares its z-index. -->
+      <aside id="detail" class="order-3 hidden fixed inset-0 z-50 overflow-y-auto overscroll-contain md:z-30 bg-panel md:static md:w-[34rem] md:shrink-0 md:border-r md:border-line"></aside>
 
-      <div id="map" class="order-1 h-[40vh] shrink-0 md:order-4 md:h-auto md:min-w-0 md:flex-1"></div>
+      <div id="map" class="order-1 h-[40dvh] shrink-0 md:order-4 md:h-auto md:min-w-0 md:flex-1"></div>
 
       <!-- Follow: no map at all. A board of the forests you watch. -->
       <section id="board" class="hidden min-h-0 flex-1 overflow-y-auto bg-shell"></section>

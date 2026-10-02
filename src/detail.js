@@ -36,8 +36,8 @@ const factorRow = (label, share, reading) =>
   `<td class="w-2/5 py-1.5">` +
   `<span class="block h-2 rounded-full bg-line"><span class="block h-full rounded-full bg-primary" style="width:${(share * 100).toFixed(0)}%"></span></span>` +
   `</td>` +
-  `<td class="py-1.5 pl-3 text-right tnum">${pct(share)}</td>` +
-  `<td class="py-1.5 pl-3 text-right tnum text-faint">${reading}</td>` +
+  `<td class="py-1.5 pl-3 text-right tnum whitespace-nowrap">${pct(share)}</td>` +
+  `<td class="py-1.5 pl-3 text-right tnum whitespace-nowrap text-faint">${reading}</td>` +
   `</tr>`;
 
 function composition(forest) {
@@ -130,17 +130,17 @@ export function detailHTML(id) {
   return (
     `<article data-detail>` +
 
-    `<div data-detail-head class="sticky top-0 z-10 flex items-start gap-3 border-b border-line bg-panel px-6 py-4">` +
+    `<div data-detail-head class="sticky top-0 z-10 flex items-start gap-3 border-b border-line bg-panel px-4 py-4 md:px-6">` +
     `<div class="min-w-0 flex-1">` +
     `<h2 class="text-xl leading-tight font-semibold">${esc(forest.name)}</h2>` +
     `<p class="mt-1 text-sm text-soft">${esc(departmentName(forest.dept))}</p>` +
     `</div>` +
     `<button id="favBtn" data-id="${esc(forest.id)}" data-dept="${esc(forest.dept)}" ` +
-    `class="shrink-0 rounded-sm border px-2.5 py-1 text-[0.8125rem] ` +
+    `class="shrink-0 rounded-sm border px-3 py-2 text-[0.8125rem] md:px-2.5 md:py-1 ` +
     `${following ? "border-primary bg-primary/10 text-primary" : "border-line-strong text-soft hover:border-line-strong"}">` +
     `${following ? "★" : "☆"} ${following ? t("detail.unfavourite") : t("detail.favourite")}</button>` +
     `<button id="closeDetail" title="${t("detail.close")}" ` +
-    `class="shrink-0 rounded-sm border border-line-strong px-2 py-1 text-[0.8125rem] text-soft hover:border-line-strong">✕</button>` +
+    `class="shrink-0 rounded-sm border border-line-strong px-3 py-2 text-[0.8125rem] text-soft md:px-2 md:py-1 hover:border-line-strong">✕</button>` +
     `</div>` +
 
     `<div class="flex items-start gap-6 px-6 py-6">` +

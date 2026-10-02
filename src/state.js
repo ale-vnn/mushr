@@ -13,7 +13,7 @@
 
 import { loadDepartment } from "./data.js";
 import { fetchConditions, RateLimited, PAST_DAYS, FORECAST_DAYS, HISTORY_DAYS } from "./weather.js";
-import { buildSeries, scoreSeries, trajectory, band } from "./score.js";
+import { buildSeries, scoreSeries, trajectory, band, expectedFlush, MODELS } from "./score.js";
 import { getPrefs, setPrefs, readCache, writeCache, getLastSeen, rememberSeen } from "./store.js";
 
 export { PAST_DAYS, FORECAST_DAYS, HISTORY_DAYS };
@@ -64,8 +64,21 @@ async function scoredDepartment(code, signal) {
   if (!cached) writeCache(key, answer);
   return forests.map((forest, i) => {
     const series = buildSeries(answer.blocks[answer.index[i]]);
-    return { ...forest, dept: code, series, scores: scoreSeries(series) };
+    return { ...forest, dept: code, series, scores: scoreSeries(series, model()) };
   });
+}
+
+const model = () => MODELS[getPrefs().index] ?? MODELS.cautious;
+
+/**
+ * Switch between the cautious and the optimists' index. Both read the same
+ * series, so this rescores what is loaded rather than asking for the weather
+ * again.
+ */
+export function setIndex(kind) {
+  setPrefs({ index: kind });
+  for (const forest of state.forests) forest.scores = scoreSeries(forest.series, model());
+  render();
 }
 
 /**
@@ -189,6 +202,8 @@ export const trajectoryFor = (forest) =>
   forest.scores ? trajectory(forest.scores, TODAY_INDEX, FORECAST_DAYS) : null;
 
 export const slopeOf = (forest) => trajectoryFor(forest)?.slope ?? -Infinity;
+
+export const flushFor = (forest) => expectedFlush(forest.series, TODAY_INDEX);
 
 export function matchesFilters(forest) {
   // The follow list is a list you built by hand; filtering it would be the

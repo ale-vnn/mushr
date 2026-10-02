@@ -28,6 +28,10 @@ Rain from one to three weeks ago, ground that stayed damp since, and soil
 temperature, combined as a weighted geometric mean: one factor at zero zeroes
 the index. Frost cancels it. The model lives in `src/score.js`.
 
+Two flavours: **cautious** ignores less than 10 mm of rain, **optimistic**
+counts any rain. Each forest also shows when its next flush is expected after a
+heavy rain, even while its index is still 0.
+
 It ranks days and places; it does not predict a harvest.
 
 ## Deployment

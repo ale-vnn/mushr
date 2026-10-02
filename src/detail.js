@@ -17,6 +17,7 @@ import { scoreChart, seriesChart } from "./charts.js";
 import { departmentName } from "./departments.js";
 import { entryFor, trajectoryFor, forestById, state, TODAY_INDEX, CHART_FROM } from "./state.js";
 import { isFavourite } from "./store.js";
+import { flushText } from "./list.js";
 
 const date = (iso) =>
   new Date(`${iso}T12:00:00`).toLocaleDateString(locale(), { day: "numeric", month: "short" });
@@ -126,6 +127,7 @@ export function detailHTML(id) {
   const d = entry?.detail;
   const chart = { from: CHART_FROM };
   const following = isFavourite(forest.id);
+  const flush = flushText(forest);
 
   return (
     `<article data-detail>` +
@@ -150,6 +152,7 @@ export function detailHTML(id) {
     (hold
       ? `<p class="mt-2.5 text-base">${t("limiting.prefix")} <strong class="font-medium">${t(`limiting.${hold.key}`)}</strong></p>`
       : "") +
+    (flush ? `<p data-flush class="mt-2 text-sm text-rain">${esc(flush)}</p>` : "") +
     trend(forest) +
     `</div></div>` +
 

@@ -115,6 +115,9 @@
     font-weight: 500;
     cursor: pointer;
   }
+  @media (width < 48rem) {
+    .mode-btn { padding: 0.45rem 0.75rem; }
+  }
   .mode-btn:hover { color: var(--color-text); }
   .mode-btn.is-active {
     background: var(--color-primary);
@@ -128,7 +131,8 @@
     background: color-mix(in srgb, currentColor 18%, transparent);
   }
 
-  .lang-btn { color: var(--color-faint); cursor: pointer; }
+  /* Padded to a finger's width: two bare letters are a 12 px target. */
+  .lang-btn { padding: 0.5rem 0.4rem; color: var(--color-faint); cursor: pointer; }
   .lang-btn:hover { color: var(--color-text); }
   .lang-btn.is-active { color: var(--color-primary); }
 

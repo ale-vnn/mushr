@@ -49,6 +49,19 @@ here; you already know where those woods are.
 Everything you choose — department, day, filters, followed forests, language —
 stays in the browser and never leaves it.
 
+## On a phone
+
+The same page, laid out for a narrow screen below 768 px:
+
+- the map takes the top 40 % of the screen, the day strip and the ranking
+  scroll underneath it, filters included;
+- opening a forest covers the screen with its sheet, and the **Back** button
+  closes it rather than leaving the site;
+- controls are sized for a finger, and heights follow the visible viewport
+  (`dvh`), so the browser's address bar never hides the bottom of the list.
+
+`npm run test:smoke` checks the sheet and the Back button at 390 px.
+
 ## The index
 
 Five agronomic facts, spelled out in `src/score.js`:

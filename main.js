@@ -131,12 +131,35 @@ function buildFilters() {
  * know where those woods are — the map would be furniture. Switching modes
  * therefore changes what is on screen, not just what is in the list.
  */
+/**
+ * Opening a forest pushes a history entry, so the Back button closes the sheet
+ * rather than the page. On a phone the sheet covers the screen and Back is the
+ * gesture everyone reaches for; on a desktop it is just as harmless.
+ *
+ * Closing goes through history only when that entry is ours: a forest restored
+ * open from the last visit has none, and going back would leave the site.
+ */
+function closeSheet() {
+  if (history.state?.sheet) history.back();
+  else if (state.selected) setSelected(state.selected);
+}
+
+function select(id) {
+  if (state.selected === id) return closeSheet();
+  if (!state.selected) history.pushState({ sheet: true }, "");
+  setSelected(id);
+}
+
+addEventListener("popstate", () => {
+  if (state.selected) setSelected(state.selected);
+});
+
 /** Build the map the first time one is needed, and wire it once. */
 let mapBoot = null;
 function ensureMap(bounds) {
   mapBoot ??= initMap("map", { bounds }).then(() => {
     onForestClick((id) => {
-      if (forestById(id)) setSelected(id);
+      if (forestById(id)) select(id);
     });
   });
   return mapBoot;
@@ -247,7 +270,7 @@ async function start() {
   const selectFrom = (e) => {
     const row = e.target.closest("[data-id]");
     if (!row) return;
-    setSelected(row.dataset.id);
+    select(row.dataset.id);
     if (state.mode === "browse") flyTo(forestById(row.dataset.id));
   };
   const clicked = (e) => {
@@ -267,12 +290,12 @@ async function start() {
       return;
     }
     if (e.target.closest("#closeDetail")) {
-      setSelected(state.selected);
+      closeSheet();
       return;
     }
     const goto = e.target.closest("[data-goto]");
     if (goto) {
-      setSelected(goto.dataset.goto);
+      select(goto.dataset.goto);
       flyTo(forestById(goto.dataset.goto));
     }
   });
